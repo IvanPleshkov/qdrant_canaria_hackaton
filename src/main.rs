@@ -1,8 +1,10 @@
 pub mod action;
-pub mod actions_collection;
+pub mod actions;
 pub mod embeddings_generator;
 pub mod promt_processor;
 pub mod qdrant;
+pub mod scene;
+pub mod scene_object;
 
 use std::sync::{
     mpsc::{self, Sender},

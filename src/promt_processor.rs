@@ -3,10 +3,7 @@ use std::{
     thread::JoinHandle,
 };
 
-use crate::{
-    actions_collection::ActionsCollection, embeddings_generator::EmbeddingsGenerator,
-    qdrant::QDrant,
-};
+use crate::{action::ActionsCollection, embeddings_generator::EmbeddingsGenerator, qdrant::QDrant};
 
 pub fn start_promt_processor(
     user_promt: Arc<Mutex<String>>,
@@ -30,7 +27,7 @@ pub fn start_promt_processor(
                 .actions
                 .get(search_result[0].point)
                 .unwrap();
-            log::info!("ACTION: {}", &action.name);
+            log::info!("ACTION: {}", &action.name());
 
             *user_promt = "".to_owned();
         }
