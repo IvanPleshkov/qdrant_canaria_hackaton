@@ -1,5 +1,6 @@
 use std::vec;
 
+#[derive(Clone, Copy)]
 pub enum Entity {
     Andrey,
     Arnaud,
@@ -51,6 +52,7 @@ pub enum Entity {
     Right,
 }
 
+#[derive(Clone)]
 pub struct EntityRef {
     pub name: String,
     pub objects: Vec<Entity>,
@@ -219,6 +221,38 @@ fn get_item_names() -> Vec<EntityRef> {
                 Entity::Tim,
                 Entity::Roman,
                 Entity::Kumar,
+            ],
+        },
+        EntityRef {
+            name: "This".to_owned(),
+            objects: vec![
+                Entity::Computer1,
+                Entity::Computer2,
+                Entity::Computer3,
+                Entity::Lamp1,
+                Entity::Lamp2,
+                Entity::Lamp3,
+                Entity::Chair1,
+                Entity::Chair2,
+                Entity::Chair3,
+                Entity::Chair4,
+                Entity::Plant1,
+                Entity::Plant2,
+                Entity::Table1,
+                Entity::Table2,
+                Entity::Window1,
+                Entity::Window2,
+                Entity::Door,
+                Entity::Cooler,
+                Entity::Printer,
+                Entity::Picture1,
+                Entity::Picture2,
+                Entity::Cup1,
+                Entity::Cup2,
+                Entity::Cup3,
+                Entity::Cup4,
+                Entity::Bottle1,
+                Entity::Bottle2,            
             ],
         },
         EntityRef {

@@ -3,7 +3,23 @@ use std::{
     thread::JoinHandle,
 };
 
-use crate::{action::ActionsCollection, embeddings_generator::EmbeddingsGenerator, qdrant::QDrant};
+use crate::{action::ActionsCollection, embeddings_generator::EmbeddingsGenerator, qdrant::QDrant, Error};
+
+pub fn init_qdrant(
+    embeddings_generator: &EmbeddingsGenerator,
+    actions_collection: &ActionsCollection,
+) -> Result<QDrant, Error> {
+    let mut qdrant = QDrant::new()?;
+    let mut texts = vec![];
+    for action in &actions_collection.actions {
+        texts.push(action.name());
+    }
+    let embeddings = embeddings_generator.generate_many(&texts)?;
+    for (idx, embedding) in embeddings.into_iter().enumerate() {
+        qdrant.insert(idx, embedding)?;
+    }
+    Ok(qdrant)
+}
 
 pub fn start_promt_processor(
     user_promt: Arc<Mutex<String>>,
@@ -11,16 +27,18 @@ pub fn start_promt_processor(
 ) -> JoinHandle<()> {
     let embeddings_generator = EmbeddingsGenerator::new();
     let actions_collection = ActionsCollection::new();
-    let process_qdrant = QDrant::new().unwrap();
-    let mut history_qdrant = QDrant::new().unwrap();
+    log::info!("Size of actions: {}", actions_collection.actions.len());
+    let process_qdrant = init_qdrant(
+        &embeddings_generator,
+        &actions_collection,
+    ).unwrap();
 
     std::thread::spawn(move || {
         while let Ok(_) = receiver.recv() {
             let mut user_promt = user_promt.lock().unwrap();
-            log::debug!("PROMT: {}", user_promt);
+            log::info!("PROMT: {}", user_promt);
 
             let embedding = embeddings_generator.generate(&user_promt).unwrap();
-            history_qdrant.insert(embedding.clone()).unwrap();
 
             let search_result = process_qdrant.search(&embedding, 1).unwrap();
             let action = actions_collection

@@ -1,9 +1,9 @@
-use crate::Error;
+use crate::{Error, actions::move_to_item::MoveToItem, scene::Scene};
 
 pub trait Action: Send + Sync {
     fn name(&self) -> String;
 
-    fn execute(&self) -> Result<(), Error>;
+    fn execute(&self, scene: &mut Scene) -> Result<(), Error>;
 }
 
 pub struct ActionsCollection {
@@ -12,6 +12,10 @@ pub struct ActionsCollection {
 
 impl ActionsCollection {
     pub fn new() -> Self {
-        Self { actions: vec![] }
+        let mut actions = vec![];
+        actions.extend(MoveToItem::all());
+        Self {
+            actions,
+        }
     }
 }

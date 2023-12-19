@@ -1,3 +1,5 @@
+use egui::ahash::HashMap;
+
 use crate::Error;
 
 pub struct ScoredIndex {
@@ -10,12 +12,12 @@ pub enum QDrant {
 }
 
 pub struct LocalQDrant {
-    pub vectors: Vec<Vec<f32>>,
+    pub vectors: HashMap<usize, Vec<f32>>,
 }
 
 impl QDrant {
     pub fn new() -> Result<Self, Error> {
-        Ok(QDrant::Local(LocalQDrant { vectors: vec![] }))
+        Ok(QDrant::Local(LocalQDrant { vectors: Default::default() }))
     }
 
     pub fn recreate(&mut self) {
@@ -26,10 +28,10 @@ impl QDrant {
         }
     }
 
-    pub fn insert(&mut self, vector: Vec<f32>) -> Result<(), Error> {
+    pub fn insert(&mut self, id: usize, vector: Vec<f32>) -> Result<(), Error> {
         match self {
             QDrant::Local(qdrant) => {
-                qdrant.vectors.push(vector);
+                qdrant.vectors.insert(id, vector);
                 Ok(())
             }
         }
@@ -41,10 +43,9 @@ impl QDrant {
                 let mut scored_indices: Vec<ScoredIndex> = qdrant
                     .vectors
                     .iter()
-                    .enumerate()
-                    .map(|(i, vector)| ScoredIndex {
+                    .map(|(id, vector)| ScoredIndex {
                         score: cosine_similarity(query, vector),
-                        point: i,
+                        point: *id,
                     })
                     .collect();
                 scored_indices.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());

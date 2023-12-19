@@ -67,6 +67,50 @@ impl EmbeddingsGenerator {
             Err(error_message)
         }
     }
+
+    pub fn generate_many(&self, texts: &[String]) -> Result<Vec<Vec<f32>>, String> {
+        log::info!("Generating embeddings for {} texts", texts.len());
+        let mut result = vec![];
+        let mut calls_counter = 0;
+        let mut counter = 0;
+        let data_size = texts.len();
+        for texts in texts.chunks(96) {
+            calls_counter += 1;
+            if calls_counter == 99 {
+                println!("sleep for 30 seconds");
+                std::thread::sleep(std::time::Duration::from_secs_f32(35.0));
+                calls_counter = 0;
+            }
+
+            counter += texts.len();
+            let texts = texts.to_vec();
+            let request_body = CohereRequest::new(texts);
+            let request_body = serde_json::to_string(&request_body).unwrap();
+    
+            let resp = self.client.post(Url::parse("https://api.cohere.ai/v1/embed").unwrap())
+                .header("accept", "application/json")
+                .header("content-type", "application/json")
+                .body(request_body)
+                .bearer_auth(API_KEY)
+                .send()
+                .unwrap();
+    
+            if resp.status().is_success() {
+                let response = resp.text().unwrap();
+                let resp: CohereResponse = serde_json::from_str(&response).unwrap();
+                for e in resp.embeddings {
+                    result.push(e);
+                }
+            } else {
+                let error = format!("Error while generating embeddings {}: {:?}", resp.status(), resp.text());
+                log::error!("{}", &error);
+                return Err(error);
+            }
+    
+            println!("{} / {}", counter, data_size);
+        }
+        Ok(result)
+    }
 }
 
 #[cfg(test)]
