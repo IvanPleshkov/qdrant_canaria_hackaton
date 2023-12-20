@@ -1,6 +1,6 @@
 use std::vec;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Hash, Eq, PartialEq, PartialOrd, Ord, Debug)]
 pub enum Entity {
     Andrey,
     Arnaud,
@@ -252,7 +252,7 @@ fn get_item_names() -> Vec<EntityRef> {
                 Entity::Cup3,
                 Entity::Cup4,
                 Entity::Bottle1,
-                Entity::Bottle2,            
+                Entity::Bottle2,
             ],
         },
         EntityRef {

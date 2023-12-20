@@ -1,6 +1,8 @@
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 
+use crate::AIRPLANE_MODE;
+
 // free access key
 const API_KEY: &str = "KVxr2s44nE14a3gu8rBnL8lR8VWxlCyIbaW2IdPj";
 const MODEL: &str = "multilingual-22-12";
@@ -38,6 +40,10 @@ impl EmbeddingsGenerator {
     }
 
     pub fn generate(&self, s: &str) -> Result<Vec<f32>, String> {
+        if AIRPLANE_MODE {
+            return Ok(vec![]);
+        }
+
         let request_body = CohereRequest::new(vec![s.to_owned()]);
         let request_body = serde_json::to_string(&request_body).unwrap();
 
@@ -69,6 +75,10 @@ impl EmbeddingsGenerator {
     }
 
     pub fn generate_many(&self, texts: &[String]) -> Result<Vec<Vec<f32>>, String> {
+        if AIRPLANE_MODE {
+            return Ok(vec![vec![]; texts.len()]);
+        }
+
         log::info!("Generating embeddings for {} texts", texts.len());
         let mut result = vec![];
         let mut calls_counter = 0;
@@ -86,15 +96,17 @@ impl EmbeddingsGenerator {
             let texts = texts.to_vec();
             let request_body = CohereRequest::new(texts);
             let request_body = serde_json::to_string(&request_body).unwrap();
-    
-            let resp = self.client.post(Url::parse("https://api.cohere.ai/v1/embed").unwrap())
+
+            let resp = self
+                .client
+                .post(Url::parse("https://api.cohere.ai/v1/embed").unwrap())
                 .header("accept", "application/json")
                 .header("content-type", "application/json")
                 .body(request_body)
                 .bearer_auth(API_KEY)
                 .send()
                 .unwrap();
-    
+
             if resp.status().is_success() {
                 let response = resp.text().unwrap();
                 let resp: CohereResponse = serde_json::from_str(&response).unwrap();
@@ -102,11 +114,15 @@ impl EmbeddingsGenerator {
                     result.push(e);
                 }
             } else {
-                let error = format!("Error while generating embeddings {}: {:?}", resp.status(), resp.text());
+                let error = format!(
+                    "Error while generating embeddings {}: {:?}",
+                    resp.status(),
+                    resp.text()
+                );
                 log::error!("{}", &error);
                 return Err(error);
             }
-    
+
             println!("{} / {}", counter, data_size);
         }
         Ok(result)

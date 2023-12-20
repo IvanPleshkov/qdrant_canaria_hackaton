@@ -2,6 +2,7 @@ use egui::ahash::HashMap;
 
 use crate::Error;
 
+#[derive(Debug, Clone, Copy)]
 pub struct ScoredIndex {
     pub score: f32,
     pub point: usize,
@@ -17,7 +18,9 @@ pub struct LocalQDrant {
 
 impl QDrant {
     pub fn new() -> Result<Self, Error> {
-        Ok(QDrant::Local(LocalQDrant { vectors: Default::default() }))
+        Ok(QDrant::Local(LocalQDrant {
+            vectors: Default::default(),
+        }))
     }
 
     pub fn recreate(&mut self) {
