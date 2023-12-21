@@ -11,14 +11,23 @@ use std::sync::{
     Arc, Mutex,
 };
 
+use clap::Parser;
 use eframe::egui;
 use promt_processor::start_promt_processor;
 use scene::Scene;
 
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+struct Args {
+    #[clap(long, default_value_t = false)]
+    pub recreate: bool,
+}
+
 pub type Error = String;
 
-#[tokio::main]
-async fn main() -> Result<(), eframe::Error> {
+fn main() -> Result<(), eframe::Error> {
+    let args = Args::parse();
+
     env_logger::builder()
         .filter_level(log::LevelFilter::Info)
         .init();
@@ -30,9 +39,9 @@ async fn main() -> Result<(), eframe::Error> {
     eframe::run_native(
         "QDrant hackaton",
         options,
-        Box::new(|cc| {
+        Box::new(move |cc| {
             egui_extras::install_image_loaders(&cc.egui_ctx);
-            Box::<GameApp>::default()
+            Box::new(GameApp::init(args.recreate))
         }),
     )
 }
@@ -43,13 +52,18 @@ struct GameApp {
     promt_processor_trigger: Sender<()>,
 }
 
-impl Default for GameApp {
-    fn default() -> Self {
+impl GameApp {
+    fn init(recreate_queries: bool) -> Self {
         log::info!("Starting app...");
         let user_promt = Arc::new(Mutex::new("".to_owned()));
         let scene = Arc::new(Mutex::new(Scene::new()));
         let (sender, receiver) = mpsc::channel();
-        let _ = start_promt_processor(user_promt.clone(), scene.clone(), receiver);
+        let _ = start_promt_processor(
+            recreate_queries,
+            user_promt.clone(),
+            scene.clone(),
+            receiver,
+        );
         Self {
             user_promt,
             scene,

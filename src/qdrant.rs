@@ -1,8 +1,9 @@
 use egui::ahash::HashMap;
 use qdrant_client::prelude::*;
+use qdrant_client::qdrant::point_id::PointIdOptions;
 use qdrant_client::qdrant::vectors_config::Config;
 use qdrant_client::qdrant::{
-    CreateCollection, SearchParams, SearchPoints, VectorParams, VectorsConfig,
+    CreateCollection, PointId, SearchParams, SearchPoints, VectorParams, VectorsConfig,
 };
 use serde_json::json;
 
@@ -31,11 +32,18 @@ pub struct LocalQDrant {
 }
 
 impl QDrant {
-    pub fn new() -> Result<Self, Error> {
+    pub async fn new() -> Result<Self, Error> {
         let client = QdrantClient::from_url(API_ENDPOINT)
             .with_api_key(API_KEY)
             .build()
             .map_err(|e| e.to_string())?;
+        client.health_check().await.map_err(
+            |e| {
+                log::error!("Dear cloud! QDrant free tier is not healthy, I also have dead dashboard on cloud. Ask me to recreate cluster to start enjoy the demo =(");
+                e.to_string()
+            }
+        )?;
+        log::info!("QDrant is avaliable");
         Ok(Self { client })
     }
 
@@ -53,6 +61,42 @@ impl QDrant {
                 }),
                 ..Default::default()
             })
+            .await
+            .map_err(|e| e.to_string())?;
+
+        let _delete = self.client.delete_collection(HISTORY_COLLECTION_NAME).await;
+        self.client
+            .create_collection(&CreateCollection {
+                collection_name: HISTORY_COLLECTION_NAME.into(),
+                vectors_config: Some(VectorsConfig {
+                    config: Some(Config::Params(VectorParams {
+                        size: 768,
+                        distance: Distance::Cosine.into(),
+                        ..Default::default()
+                    })),
+                }),
+                ..Default::default()
+            })
+            .await
+            .map_err(|e| e.to_string())?;
+        Ok(())
+    }
+
+    pub async fn insert_history(&mut self, text: &str, vector: Vec<f32>) -> Result<(), Error> {
+        let random_uuid = uuid::Uuid::new_v4();
+        let point_id: PointId = PointId {
+            point_id_options: Some(PointIdOptions::Uuid(random_uuid.to_string())),
+        };
+        let payload: Payload = json!(
+            {
+                "text": text.to_owned(),
+            }
+        )
+        .try_into()
+        .unwrap();
+        let points = vec![PointStruct::new(point_id, vector, payload)];
+        self.client
+            .upsert_points_blocking(HISTORY_COLLECTION_NAME, None, points, None)
             .await
             .map_err(|e| e.to_string())?;
         Ok(())
