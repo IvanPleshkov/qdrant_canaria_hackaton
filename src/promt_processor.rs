@@ -62,7 +62,7 @@ pub fn start_promt_processor(
             let action = actions_collection.actions.get(search_result.point).unwrap();
 
             log::info!(
-                "ACTION: {} (similarity = {})",
+                "NEAREST COMMAND: {} (similarity = {})",
                 &action.name(),
                 search_result.score
             );

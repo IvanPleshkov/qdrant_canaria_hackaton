@@ -25,8 +25,7 @@ impl Action for DropItem {
         let grabbed_item = scene.lock().unwrap().grabbed_item.clone();
         if let Some(grabbed_item) = grabbed_item {
             let dst = if let Some(dst) = &self.destination {
-                dst
-                    .objects
+                dst.objects
                     .iter()
                     .fold((Entity::Andrey, f32::MAX), |nearest, &entity| {
                         let position = scene.lock().unwrap().get_position(entity);
@@ -52,7 +51,12 @@ impl Action for DropItem {
 
             scene.lock().unwrap().grabbed_item = None;
             scene.lock().unwrap().dropped_items.insert(grabbed_item);
-            scene.lock().unwrap().set_position(grabbed_item, andrey_position);
+
+            let andrey_position = scene.lock().unwrap().get_position(Entity::Andrey);
+            scene
+                .lock()
+                .unwrap()
+                .set_position(grabbed_item, andrey_position);
         } else {
             log::error!("Nothing to drop");
             return Ok(());

@@ -4,8 +4,6 @@ use egui::ahash::HashSet;
 
 use crate::entity::Entity;
 
-const LEFT_RIGHT_SIZE: f32 = -10.0;
-
 pub const HEAD_AMPLITUDE: f32 = 10.0;
 
 pub struct Scene {
@@ -27,46 +25,16 @@ impl Scene {
         positions.insert(Entity::Tim, 850.0);
         positions.insert(Entity::Roman, 750.0);
 
-        positions.insert(Entity::Computer1, -100.0);
-        positions.insert(Entity::Computer2, -100.0);
-        positions.insert(Entity::Computer3, -100.0);
-
-        positions.insert(Entity::Lamp1, -100.0);
-        positions.insert(Entity::Lamp2, -100.0);
-        positions.insert(Entity::Lamp3, -100.0);
-
-        positions.insert(Entity::Chair1, -100.0);
-        positions.insert(Entity::Chair2, -100.0);
-        positions.insert(Entity::Chair3, -100.0);
-        positions.insert(Entity::Chair4, -100.0);
-
-        positions.insert(Entity::Plant1, -100.0);
-        positions.insert(Entity::Plant2, -100.0);
-
-        positions.insert(Entity::Table1, -100.0);
-        positions.insert(Entity::Table2, -100.0);
-
-        positions.insert(Entity::Window1, 500.0);
+        positions.insert(Entity::Window1, 600.0);
         positions.insert(Entity::Window2, 800.0);
-        positions.insert(Entity::Door, -100.0);
 
-        positions.insert(Entity::Cooler, -100.0);
-        positions.insert(Entity::Printer, -100.0);
-        positions.insert(Entity::Picture1, -100.0);
-        positions.insert(Entity::Picture2, -100.0);
-
-        positions.insert(Entity::Cup1, 30.0);
-        positions.insert(Entity::Cup2, 60.0);
-        positions.insert(Entity::Cup3, 90.0);
-        positions.insert(Entity::Cup4, 120.0);
+        positions.insert(Entity::Cup1, 100.0 - 50.0);
+        positions.insert(Entity::Cup2, 300.0 - 50.0);
+        positions.insert(Entity::Cup3, 750.0 - 50.0);
+        positions.insert(Entity::Cup4, 850.0 - 50.0);
 
         positions.insert(Entity::Bottle1, 1000.0);
         positions.insert(Entity::Bottle2, 1020.0);
-
-        positions.insert(Entity::LeftEnd, -100.0);
-        positions.insert(Entity::RightEnd, -100.0);
-        positions.insert(Entity::Left, -100.0);
-        positions.insert(Entity::Right, -100.0);
 
         Self {
             time_instant: std::time::Instant::now(),
@@ -93,26 +61,31 @@ impl Scene {
         let y_line = center.y + 100.0;
         ui.set_clip_rect(full_rect);
 
-        egui::Image::new(egui::include_image!("assets/floor_texture.png"))
-            .paint_at(ui, egui::Rect::from_two_pos(
-                egui::Pos2::new(0.0, y_line),
-                full_rect.right_bottom(),
-        ));
-        egui::Image::new(egui::include_image!("assets/wall_texture.png"))
-            .paint_at(ui, egui::Rect::from_two_pos(
+        egui::Image::new(egui::include_image!("assets/floor_texture.png")).paint_at(
+            ui,
+            egui::Rect::from_two_pos(egui::Pos2::new(0.0, y_line), full_rect.right_bottom()),
+        );
+        egui::Image::new(egui::include_image!("assets/wall_texture.png")).paint_at(
+            ui,
+            egui::Rect::from_two_pos(
                 egui::Pos2::new(0.0, 0.0),
                 egui::Pos2::new(full_rect.right_bottom().x, y_line),
-        ));
-        egui::Image::new(egui::include_image!("assets/window.png"))
-            .paint_at(ui, egui::Rect::from_center_size(
+            ),
+        );
+        egui::Image::new(egui::include_image!("assets/window.png")).paint_at(
+            ui,
+            egui::Rect::from_center_size(
                 egui::Pos2::new(self.get_position(Entity::Window1) - 200.0, y_line - 100.0),
                 egui::Vec2::new(100.0, 100.0),
-        ));
-        egui::Image::new(egui::include_image!("assets/window.png"))
-            .paint_at(ui, egui::Rect::from_center_size(
+            ),
+        );
+        egui::Image::new(egui::include_image!("assets/window.png")).paint_at(
+            ui,
+            egui::Rect::from_center_size(
                 egui::Pos2::new(self.get_position(Entity::Window2) - 200.0, y_line - 100.0),
                 egui::Vec2::new(100.0, 100.0),
-        ));
+            ),
+        );
 
         self.draw_arnaud(
             ui,
@@ -140,22 +113,44 @@ impl Scene {
         );
 
         if !self.dropped_items.contains(&Entity::Cup1) && self.grabbed_item != Some(Entity::Cup1) {
-            self.draw_cup(ui, egui::Pos2::new(30.0, y_line));
+            self.draw_cup(
+                ui,
+                egui::Pos2::new(self.get_position(Entity::Cup1), y_line - 7.0),
+            );
         }
         if !self.dropped_items.contains(&Entity::Cup2) && self.grabbed_item != Some(Entity::Cup2) {
-            self.draw_cup(ui, egui::Pos2::new(60.0, y_line));
+            self.draw_cup(
+                ui,
+                egui::Pos2::new(self.get_position(Entity::Cup2), y_line - 7.0),
+            );
         }
         if !self.dropped_items.contains(&Entity::Cup3) && self.grabbed_item != Some(Entity::Cup3) {
-            self.draw_cup(ui, egui::Pos2::new(90.0, y_line));
+            self.draw_cup(
+                ui,
+                egui::Pos2::new(self.get_position(Entity::Cup3), y_line - 10.0),
+            );
         }
         if !self.dropped_items.contains(&Entity::Cup4) && self.grabbed_item != Some(Entity::Cup4) {
-            self.draw_cup(ui, egui::Pos2::new(120.0, y_line));
+            self.draw_cup(
+                ui,
+                egui::Pos2::new(self.get_position(Entity::Cup4), y_line - 10.0),
+            );
         }
-        if !self.dropped_items.contains(&Entity::Bottle1) && self.grabbed_item != Some(Entity::Bottle1) {
-            self.draw_bottle(ui, egui::Pos2::new(self.get_position(Entity::Bottle1), y_line));
+        if !self.dropped_items.contains(&Entity::Bottle1)
+            && self.grabbed_item != Some(Entity::Bottle1)
+        {
+            self.draw_bottle(
+                ui,
+                egui::Pos2::new(self.get_position(Entity::Bottle1), y_line + 20.0),
+            );
         }
-        if !self.dropped_items.contains(&Entity::Bottle2) && self.grabbed_item != Some(Entity::Bottle2) {
-            self.draw_bottle(ui, egui::Pos2::new(self.get_position(Entity::Bottle2), y_line));
+        if !self.dropped_items.contains(&Entity::Bottle2)
+            && self.grabbed_item != Some(Entity::Bottle2)
+        {
+            self.draw_bottle(
+                ui,
+                egui::Pos2::new(self.get_position(Entity::Bottle2), y_line + 20.0),
+            );
         }
 
         self.draw_andrey(
@@ -180,22 +175,6 @@ impl Scene {
 
     pub fn set_position(&mut self, entity: Entity, position: f32) {
         self.positions.insert(entity, position);
-        if entity == Entity::Andrey {
-            let left_position = if position - LEFT_RIGHT_SIZE < self.get_position(Entity::LeftEnd) {
-                position - LEFT_RIGHT_SIZE
-            } else {
-                self.get_position(Entity::LeftEnd)
-            };
-            self.positions.insert(Entity::Left, left_position);
-
-            let right_position = if position - LEFT_RIGHT_SIZE > self.get_position(Entity::RightEnd)
-            {
-                position - LEFT_RIGHT_SIZE
-            } else {
-                self.get_position(Entity::RightEnd)
-            };
-            self.positions.insert(Entity::Right, right_position);
-        }
     }
 
     pub fn get_position(&self, entity: Entity) -> f32 {
@@ -220,7 +199,7 @@ impl Scene {
             egui::Vec2::new(100.0, 100.0),
         );
         egui::Image::new(egui::include_image!("assets/andrey.png")).paint_at(ui, andrey_head_rect);
-    
+
         if let Some(grabbed_item) = self.grabbed_item {
             let hand_position = pos - egui::Vec2::new(0.0, 45.0);
             match grabbed_item {
@@ -257,10 +236,7 @@ impl Scene {
 
     pub fn draw_ivan(&self, ui: &mut egui::Ui, pos: egui::Pos2) {
         let rope_rect = egui::Rect::from_two_pos(
-            pos + egui::Vec2::new(
-                0.0,
-                -120.0,
-            ),
+            pos + egui::Vec2::new(0.0, -120.0),
             egui::pos2(pos.x + 5.0, 0.0),
         );
         egui::Image::new(egui::include_image!("assets/floor_texture.png")).paint_at(ui, rope_rect);
@@ -270,10 +246,7 @@ impl Scene {
         );
         egui::Image::new(egui::include_image!("assets/ivan_body.png")).paint_at(ui, body_rect);
         let head_rect = egui::Rect::from_center_size(
-            pos + egui::Vec2::new(
-                0.0,
-                -120.0,
-            ),
+            pos + egui::Vec2::new(0.0, -120.0),
             egui::Vec2::new(100.0, 100.0),
         );
         egui::Image::new(egui::include_image!("assets/ivan.png")).paint_at(ui, head_rect);

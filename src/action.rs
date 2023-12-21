@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 
 use crate::{
-    actions::{move_to_item::MoveToItem, take_item::TakeItem, drop_item::DropItem},
+    actions::{drop_item::DropItem, move_to_item::MoveToItem, take_item::TakeItem},
     scene::Scene,
     Error,
 };

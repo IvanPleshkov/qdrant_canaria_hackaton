@@ -10,33 +10,8 @@ pub enum Entity {
     Roman,
     Kumar,
 
-    Computer1,
-    Computer2,
-    Computer3,
-
-    Lamp1,
-    Lamp2,
-    Lamp3,
-
-    Chair1,
-    Chair2,
-    Chair3,
-    Chair4,
-
-    Plant1,
-    Plant2,
-
-    Table1,
-    Table2,
-
     Window1,
     Window2,
-    Door,
-
-    Cooler,
-    Printer,
-    Picture1,
-    Picture2,
 
     Cup1,
     Cup2,
@@ -45,11 +20,6 @@ pub enum Entity {
 
     Bottle1,
     Bottle2,
-
-    LeftEnd,
-    RightEnd,
-    Left,
-    Right,
 }
 
 #[derive(Clone)]
@@ -61,10 +31,7 @@ pub struct EntityRef {
 impl Entity {
     pub fn is_takeable(&self) -> bool {
         match self {
-            Entity::Lamp1
-            | Entity::Lamp2
-            | Entity::Lamp3
-            | Entity::Cup1
+            Entity::Cup1
             | Entity::Cup2
             | Entity::Cup3
             | Entity::Cup4
@@ -83,37 +50,14 @@ impl Entity {
             Entity::Tim => "Tim",
             Entity::Roman => "Roman",
             Entity::Kumar => "Kumar",
-            Entity::Computer1 => "Computer",
-            Entity::Computer2 => "Computer",
-            Entity::Computer3 => "Computer",
-            Entity::Lamp1 => "Lamp",
-            Entity::Lamp2 => "Lamp",
-            Entity::Lamp3 => "Lamp",
-            Entity::Chair1 => "Chair",
-            Entity::Chair2 => "Chair",
-            Entity::Chair3 => "Chair",
-            Entity::Chair4 => "Chair",
-            Entity::Plant1 => "Plant",
-            Entity::Plant2 => "Plant",
-            Entity::Table1 => "Table",
-            Entity::Table2 => "Table",
             Entity::Window1 => "Window",
             Entity::Window2 => "Window",
-            Entity::Door => "Door",
-            Entity::Cooler => "Cooler",
-            Entity::Printer => "Printer",
-            Entity::Picture1 => "Picture",
-            Entity::Picture2 => "Picture",
             Entity::Cup1 => "Cup",
             Entity::Cup2 => "Cup",
             Entity::Cup3 => "Cup",
             Entity::Cup4 => "Cup",
             Entity::Bottle1 => "Bottle",
             Entity::Bottle2 => "Bottle",
-            Entity::LeftEnd => "LeftEnd",
-            Entity::RightEnd => "RightEnd",
-            Entity::Left => "Left",
-            Entity::Right => "Right",
         }
     }
 }
@@ -286,27 +230,8 @@ fn get_item_names() -> Vec<EntityRef> {
         EntityRef {
             name: "This".to_owned(),
             objects: vec![
-                Entity::Computer1,
-                Entity::Computer2,
-                Entity::Computer3,
-                Entity::Lamp1,
-                Entity::Lamp2,
-                Entity::Lamp3,
-                Entity::Chair1,
-                Entity::Chair2,
-                Entity::Chair3,
-                Entity::Chair4,
-                Entity::Plant1,
-                Entity::Plant2,
-                Entity::Table1,
-                Entity::Table2,
                 Entity::Window1,
                 Entity::Window2,
-                Entity::Door,
-                Entity::Cooler,
-                Entity::Printer,
-                Entity::Picture1,
-                Entity::Picture2,
                 Entity::Cup1,
                 Entity::Cup2,
                 Entity::Cup3,
@@ -316,49 +241,8 @@ fn get_item_names() -> Vec<EntityRef> {
             ],
         },
         EntityRef {
-            name: "Computer".to_owned(),
-            objects: vec![Entity::Computer1, Entity::Computer2, Entity::Computer3],
-        },
-        EntityRef {
-            name: "Lamp".to_owned(),
-            objects: vec![Entity::Lamp1, Entity::Lamp2, Entity::Lamp3],
-        },
-        EntityRef {
-            name: "Chair".to_owned(),
-            objects: vec![
-                Entity::Chair1,
-                Entity::Chair2,
-                Entity::Chair3,
-                Entity::Chair4,
-            ],
-        },
-        EntityRef {
-            name: "Plant".to_owned(),
-            objects: vec![Entity::Plant1, Entity::Plant2],
-        },
-        EntityRef {
-            name: "Table".to_owned(),
-            objects: vec![Entity::Table1, Entity::Table2],
-        },
-        EntityRef {
             name: "Window".to_owned(),
             objects: vec![Entity::Window1, Entity::Window2],
-        },
-        EntityRef {
-            name: "Door".to_owned(),
-            objects: vec![Entity::Door],
-        },
-        EntityRef {
-            name: "Cooler".to_owned(),
-            objects: vec![Entity::Cooler],
-        },
-        EntityRef {
-            name: "Printer".to_owned(),
-            objects: vec![Entity::Printer],
-        },
-        EntityRef {
-            name: "Picture".to_owned(),
-            objects: vec![Entity::Picture1, Entity::Picture2],
         },
         EntityRef {
             name: "Cup".to_owned(),

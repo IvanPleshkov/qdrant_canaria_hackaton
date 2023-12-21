@@ -56,6 +56,7 @@ impl Action for TakeItem {
         move_command.execute(scene.clone())?;
 
         scene.lock().unwrap().grabbed_item = Some(target.0);
+        scene.lock().unwrap().dropped_items.remove(&target.0);
 
         Ok(())
     }

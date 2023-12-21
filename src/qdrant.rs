@@ -3,7 +3,8 @@ use egui::ahash::HashMap;
 use crate::Error;
 
 pub const API_KEY: &str = "r6fGd-QnCMNsKqCjvGbbfznlOPc8zpqNnR8JfZJ_FOUWuc7lrpe6ZQ";
-pub const API_ENDPOINT: &str = "https://44bb44e9-8d14-418e-be08-cfbd4b533d7e.us-east4-0.gcp.cloud.qdrant.io:6334";
+pub const API_ENDPOINT: &str =
+    "https://44bb44e9-8d14-418e-be08-cfbd4b533d7e.us-east4-0.gcp.cloud.qdrant.io:6334";
 
 #[derive(Debug, Clone, Copy)]
 pub struct ScoredIndex {
