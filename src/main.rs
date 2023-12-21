@@ -25,7 +25,7 @@ fn main() -> Result<(), eframe::Error> {
         .init();
 
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([1000.0, 500.0]),
+        viewport: egui::ViewportBuilder::default().with_inner_size([1100.0, 500.0]),
         ..Default::default()
     };
     eframe::run_native(

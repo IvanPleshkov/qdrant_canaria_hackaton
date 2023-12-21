@@ -11,8 +11,8 @@ use crate::{
 };
 
 pub struct MoveToItem {
-    name: String,
-    entity_ref: EntityRef,
+    pub name: String,
+    pub entity_ref: EntityRef,
 }
 
 impl Action for MoveToItem {
@@ -35,6 +35,11 @@ impl Action for MoveToItem {
                         nearest
                     }
                 });
+
+        if target.1 == f32::MAX {
+            log::error!("Andrey cannot go to it");
+            return Ok(());
+        }
 
         let mut current_position = scene.lock().unwrap().get_position(Entity::Andrey);
         let target_position = scene.lock().unwrap().get_position(target.0);

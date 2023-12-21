@@ -58,6 +58,66 @@ pub struct EntityRef {
     pub objects: Vec<Entity>,
 }
 
+impl Entity {
+    pub fn is_takeable(&self) -> bool {
+        match self {
+            Entity::Lamp1
+            | Entity::Lamp2
+            | Entity::Lamp3
+            | Entity::Cup1
+            | Entity::Cup2
+            | Entity::Cup3
+            | Entity::Cup4
+            | Entity::Bottle1
+            | Entity::Bottle2 => true,
+            _ => false,
+        }
+    }
+
+    pub fn get_name(&self) -> &'static str {
+        match self {
+            Entity::Andrey => "Andrey",
+            Entity::Arnaud => "Arnaud",
+            Entity::Ivan => "Ivan",
+            Entity::Luis => "Luis",
+            Entity::Tim => "Tim",
+            Entity::Roman => "Roman",
+            Entity::Kumar => "Kumar",
+            Entity::Computer1 => "Computer",
+            Entity::Computer2 => "Computer",
+            Entity::Computer3 => "Computer",
+            Entity::Lamp1 => "Lamp",
+            Entity::Lamp2 => "Lamp",
+            Entity::Lamp3 => "Lamp",
+            Entity::Chair1 => "Chair",
+            Entity::Chair2 => "Chair",
+            Entity::Chair3 => "Chair",
+            Entity::Chair4 => "Chair",
+            Entity::Plant1 => "Plant",
+            Entity::Plant2 => "Plant",
+            Entity::Table1 => "Table",
+            Entity::Table2 => "Table",
+            Entity::Window1 => "Window",
+            Entity::Window2 => "Window",
+            Entity::Door => "Door",
+            Entity::Cooler => "Cooler",
+            Entity::Printer => "Printer",
+            Entity::Picture1 => "Picture",
+            Entity::Picture2 => "Picture",
+            Entity::Cup1 => "Cup",
+            Entity::Cup2 => "Cup",
+            Entity::Cup3 => "Cup",
+            Entity::Cup4 => "Cup",
+            Entity::Bottle1 => "Bottle",
+            Entity::Bottle2 => "Bottle",
+            Entity::LeftEnd => "LeftEnd",
+            Entity::RightEnd => "RightEnd",
+            Entity::Left => "Left",
+            Entity::Right => "Right",
+        }
+    }
+}
+
 pub fn get_all_entity_refs() -> Vec<EntityRef> {
     let mut result = vec![];
 
@@ -214,7 +274,7 @@ fn get_item_names() -> Vec<EntityRef> {
         EntityRef {
             name: "Person".to_owned(),
             objects: vec![
-                Entity::Andrey,
+                // Entity::Andrey,
                 Entity::Arnaud,
                 Entity::Ivan,
                 Entity::Luis,
