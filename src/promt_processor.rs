@@ -1,29 +1,37 @@
-use std::{
-    sync::{mpsc::Receiver, Arc, Mutex},
-    thread::JoinHandle,
-};
+use std::sync::{mpsc::Receiver, Arc, Mutex};
 
 use crate::{
-    action::ActionsCollection,
-    embeddings_generator::EmbeddingsGenerator,
-    qdrant::{QDrant, ScoredIndex},
-    scene::Scene,
-    Error, AIRPLANE_MODE,
+    action::ActionsCollection, embeddings_generator::EmbeddingsGenerator, qdrant::QDrant,
+    scene::Scene, Error,
 };
 
-pub fn init_qdrant(
+pub async fn init_qdrant(
+    user_promt: Arc<Mutex<String>>,
     embeddings_generator: &EmbeddingsGenerator,
     actions_collection: &ActionsCollection,
 ) -> Result<QDrant, Error> {
+    let mut _user_promt = user_promt.lock().unwrap();
+
     let mut qdrant = QDrant::new()?;
+    qdrant.recreate_queries().await?;
+
     let mut texts = vec![];
     for action in &actions_collection.actions {
         texts.push(action.name());
     }
-    let embeddings = embeddings_generator.generate_many(&texts)?;
+
+    log::info!("Generating embeddings...");
+    let embeddings = embeddings_generator.generate_many(&texts).await?;
+
+    log::info!("Inserting queries...");
     for (idx, embedding) in embeddings.into_iter().enumerate() {
-        qdrant.insert(idx, embedding)?;
+        if idx % 10 == 0 {
+            log::info!("Inserted {} queries", idx);
+        }
+        qdrant.insert_query(idx, &texts[idx], embedding).await?;
     }
+
+    log::info!("Ready to go");
     Ok(qdrant)
 }
 
@@ -31,44 +39,43 @@ pub fn start_promt_processor(
     user_promt: Arc<Mutex<String>>,
     scene: Arc<Mutex<Scene>>,
     receiver: Receiver<()>,
-) -> JoinHandle<()> {
-    let embeddings_generator = EmbeddingsGenerator::new();
-    let actions_collection = ActionsCollection::new();
-    log::info!("Size of actions: {}", actions_collection.actions.len());
-    let process_qdrant = init_qdrant(&embeddings_generator, &actions_collection).unwrap();
-
+) {
     std::thread::spawn(move || {
-        while let Ok(_) = receiver.recv() {
-            let mut user_promt = user_promt.lock().unwrap();
-            log::info!("PROMT: {}", user_promt);
+        let runtime = tokio::runtime::Builder::new_multi_thread()
+            .worker_threads(1)
+            .enable_all()
+            .build();
 
-            let search_result = if AIRPLANE_MODE {
-                let user_promt = user_promt.to_owned().to_lowercase();
-                let mut found_id = usize::MAX;
-                for (i, action) in actions_collection.actions.iter().enumerate() {
-                    if user_promt == action.name().to_lowercase() {
-                        found_id = i;
-                    }
-                }
-                ScoredIndex {
-                    score: 0.0,
-                    point: found_id,
-                }
-            } else {
-                let embedding = embeddings_generator.generate(&user_promt).unwrap();
-                process_qdrant.search(&embedding, 1).unwrap()[0]
-            };
+        runtime.unwrap().block_on(async move {
+            let embeddings_generator = EmbeddingsGenerator::new();
+            let actions_collection = ActionsCollection::new();
+            log::info!("Size of actions: {}", actions_collection.actions.len());
+            let process_qdrant = init_qdrant(
+                user_promt.clone(),
+                &embeddings_generator,
+                &actions_collection,
+            )
+            .await
+            .unwrap();
 
-            let action = actions_collection.actions.get(search_result.point).unwrap();
+            while let Ok(_) = receiver.recv() {
+                let mut user_promt = user_promt.lock().unwrap();
+                log::info!("PROMT: {}", user_promt);
 
-            log::info!(
-                "NEAREST COMMAND: {} (similarity = {})",
-                &action.name(),
-                search_result.score
-            );
-            action.execute(scene.clone()).unwrap();
+                let embedding = embeddings_generator.generate(&user_promt).await.unwrap();
+                let search_result = process_qdrant.search_query(&embedding, 1).await.unwrap()[0];
 
-            *user_promt = "".to_owned();
-        }
-    })
+                let action = actions_collection.actions.get(search_result.point).unwrap();
+
+                log::info!(
+                    "NEAREST COMMAND: {} (similarity = {})",
+                    &action.name(),
+                    search_result.score
+                );
+                action.execute(scene.clone()).unwrap();
+
+                *user_promt = "".to_owned();
+            }
+        });
+    });
 }

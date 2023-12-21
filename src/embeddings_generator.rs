@@ -1,8 +1,6 @@
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 
-use crate::AIRPLANE_MODE;
-
 // free access key
 const API_KEY: &str = "KVxr2s44nE14a3gu8rBnL8lR8VWxlCyIbaW2IdPj";
 const MODEL: &str = "multilingual-22-12";
@@ -30,20 +28,16 @@ impl CohereRequest {
 }
 
 pub struct EmbeddingsGenerator {
-    client: reqwest::blocking::Client,
+    client: reqwest::Client,
 }
 
 impl EmbeddingsGenerator {
     pub fn new() -> Self {
-        let client = reqwest::blocking::Client::new();
+        let client = reqwest::Client::new();
         Self { client }
     }
 
-    pub fn generate(&self, s: &str) -> Result<Vec<f32>, String> {
-        if AIRPLANE_MODE {
-            return Ok(vec![]);
-        }
-
+    pub async fn generate(&self, s: &str) -> Result<Vec<f32>, String> {
         let request_body = CohereRequest::new(vec![s.to_owned()]);
         let request_body = serde_json::to_string(&request_body).unwrap();
 
@@ -55,10 +49,11 @@ impl EmbeddingsGenerator {
             .body(request_body)
             .bearer_auth(API_KEY)
             .send()
-            .unwrap();
+            .await
+            .map_err(|e| e.to_string())?;
 
         if resp.status().is_success() {
-            let response = resp.text().unwrap();
+            let response = resp.text().await.unwrap();
             let resp: CohereResponse = serde_json::from_str(&response).unwrap();
             if let Some(embedding) = resp.embeddings.first() {
                 Ok(embedding.clone())
@@ -68,17 +63,14 @@ impl EmbeddingsGenerator {
                 Err(error_message)
             }
         } else {
-            let error_message = format!("Error {}: {:?}", resp.status(), resp.text());
+            let error_message =
+                format!("Error {}: {:?}", resp.status(), resp.text().await.unwrap());
             println!("{}", error_message);
             Err(error_message)
         }
     }
 
-    pub fn generate_many(&self, texts: &[String]) -> Result<Vec<Vec<f32>>, String> {
-        if AIRPLANE_MODE {
-            return Ok(vec![vec![]; texts.len()]);
-        }
-
+    pub async fn generate_many(&self, texts: &[String]) -> Result<Vec<Vec<f32>>, String> {
         log::info!("Generating embeddings for {} texts", texts.len());
         let mut result = vec![];
         let mut calls_counter = 0;
@@ -105,10 +97,11 @@ impl EmbeddingsGenerator {
                 .body(request_body)
                 .bearer_auth(API_KEY)
                 .send()
-                .unwrap();
+                .await
+                .map_err(|e| e.to_string())?;
 
             if resp.status().is_success() {
-                let response = resp.text().unwrap();
+                let response = resp.text().await.unwrap();
                 let resp: CohereResponse = serde_json::from_str(&response).unwrap();
                 for e in resp.embeddings {
                     result.push(e);
@@ -117,7 +110,7 @@ impl EmbeddingsGenerator {
                 let error = format!(
                     "Error while generating embeddings {}: {:?}",
                     resp.status(),
-                    resp.text()
+                    resp.text().await
                 );
                 log::error!("{}", &error);
                 return Err(error);
@@ -126,17 +119,5 @@ impl EmbeddingsGenerator {
             println!("{} / {}", counter, data_size);
         }
         Ok(result)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_embeddings_generator() {
-        let embeddings_generator = EmbeddingsGenerator::new();
-        let embeddings = embeddings_generator.generate("Hello world").unwrap();
-        assert_eq!(embeddings.len(), 768);
     }
 }

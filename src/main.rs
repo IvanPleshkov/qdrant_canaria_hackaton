@@ -17,9 +17,8 @@ use scene::Scene;
 
 pub type Error = String;
 
-pub const AIRPLANE_MODE: bool = false;
-
-fn main() -> Result<(), eframe::Error> {
+#[tokio::main]
+async fn main() -> Result<(), eframe::Error> {
     env_logger::builder()
         .filter_level(log::LevelFilter::Info)
         .init();
