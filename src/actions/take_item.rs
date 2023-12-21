@@ -55,6 +55,10 @@ impl Action for TakeItem {
         };
         move_command.execute(scene.clone())?;
 
+        if target.0 != Entity::Andrey {
+            log::info!("ACTION: Andrey takes {}", target.0.get_name());
+        }
+
         scene.lock().unwrap().grabbed_item = Some(target.0);
         scene.lock().unwrap().dropped_items.remove(&target.0);
 

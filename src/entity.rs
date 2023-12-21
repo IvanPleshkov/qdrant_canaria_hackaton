@@ -214,7 +214,7 @@ fn get_kumar_names() -> Vec<EntityRef> {
 }
 
 fn get_item_names() -> Vec<EntityRef> {
-    vec![
+    let mut result = vec![
         EntityRef {
             name: "Person".to_owned(),
             objects: vec![
@@ -252,5 +252,52 @@ fn get_item_names() -> Vec<EntityRef> {
             name: "Bottle".to_owned(),
             objects: vec![Entity::Bottle1, Entity::Bottle1],
         },
-    ]
+    ];
+
+    for names in get_arnaud_names() {
+        result.push(EntityRef {
+            name: format!("{} cup", names.name),
+            objects: vec![Entity::Cup1],
+        });
+    }
+
+    for names in get_luis_names() {
+        result.push(EntityRef {
+            name: format!("{} cup", names.name),
+            objects: vec![Entity::Cup2],
+        });
+    }
+
+    for names in get_roman_names() {
+        result.push(EntityRef {
+            name: format!("{} cup", names.name),
+            objects: vec![Entity::Cup3],
+        });
+    }
+
+    for names in get_tim_names() {
+        result.push(EntityRef {
+            name: format!("{} cup", names.name),
+            objects: vec![Entity::Cup4],
+        });
+    }
+
+    for names in get_ivan_names() {
+        result.push(EntityRef {
+            name: format!("{} bottle", names.name),
+            objects: vec![Entity::Bottle1, Entity::Bottle2],
+        });
+    }
+
+    result.push(EntityRef {
+        name: "Left Window".to_owned(),
+        objects: vec![Entity::Window2],
+    });
+
+    result.push(EntityRef {
+        name: "Right Window".to_owned(),
+        objects: vec![Entity::Window1],
+    });
+
+    result
 }

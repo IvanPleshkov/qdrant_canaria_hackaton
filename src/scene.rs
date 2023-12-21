@@ -28,10 +28,10 @@ impl Scene {
         positions.insert(Entity::Window1, 600.0);
         positions.insert(Entity::Window2, 800.0);
 
-        positions.insert(Entity::Cup1, 100.0 - 50.0);
-        positions.insert(Entity::Cup2, 300.0 - 50.0);
-        positions.insert(Entity::Cup3, 750.0 - 50.0);
-        positions.insert(Entity::Cup4, 850.0 - 50.0);
+        positions.insert(Entity::Cup1, 100.0 - 50.0); // cup1 - Arnaud cup
+        positions.insert(Entity::Cup2, 300.0 - 50.0); // cup2 - Luis cup
+        positions.insert(Entity::Cup3, 750.0 - 50.0); // cup3 - Roman cup
+        positions.insert(Entity::Cup4, 850.0 - 50.0); // cup4 - Tim cup
 
         positions.insert(Entity::Bottle1, 1000.0);
         positions.insert(Entity::Bottle2, 1020.0);

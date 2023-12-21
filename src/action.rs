@@ -1,7 +1,10 @@
 use std::sync::{Arc, Mutex};
 
 use crate::{
-    actions::{drop_item::DropItem, move_to_item::MoveToItem, take_item::TakeItem},
+    actions::{
+        drop_item::DropItem, move_direction::MoveDirection, move_to_item::MoveToItem,
+        take_item::TakeItem,
+    },
     scene::Scene,
     Error,
 };
@@ -22,6 +25,7 @@ impl ActionsCollection {
         actions.extend(MoveToItem::all());
         actions.extend(TakeItem::all());
         actions.extend(DropItem::all());
+        actions.extend(MoveDirection::all());
         Self { actions }
     }
 }

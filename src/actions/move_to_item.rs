@@ -1,7 +1,4 @@
-use std::{
-    sync::{Arc, Mutex},
-    time::Duration,
-};
+use std::sync::{Arc, Mutex};
 
 use crate::{
     action::Action,
@@ -9,6 +6,8 @@ use crate::{
     scene::Scene,
     Error,
 };
+
+use super::move_to_position;
 
 pub struct MoveToItem {
     pub name: String,
@@ -41,16 +40,13 @@ impl Action for MoveToItem {
             return Ok(());
         }
 
-        let mut current_position = scene.lock().unwrap().get_position(Entity::Andrey);
-        let target_position = scene.lock().unwrap().get_position(target.0);
-        while (current_position - target_position).abs() > 30.0 {
-            current_position += (target_position - current_position).signum() * 5.0;
-            std::thread::sleep(Duration::from_millis(20));
-            scene
-                .lock()
-                .unwrap()
-                .set_position(Entity::Andrey, current_position);
+        if target.0 != Entity::Andrey {
+            log::info!("ACTION: Andrey goes to {}", target.0.get_name());
         }
+
+        let target_position = scene.lock().unwrap().get_position(target.0);
+        move_to_position(scene.clone(), target_position);
+
         Ok(())
     }
 }

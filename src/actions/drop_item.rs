@@ -57,6 +57,10 @@ impl Action for DropItem {
                 .lock()
                 .unwrap()
                 .set_position(grabbed_item, andrey_position);
+
+            if grabbed_item != Entity::Andrey {
+                log::info!("ACTION: Andrey drops {}", grabbed_item.get_name());
+            }
         } else {
             log::error!("Nothing to drop");
             return Ok(());
