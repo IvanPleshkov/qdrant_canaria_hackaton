@@ -54,13 +54,61 @@ Cohere is required for text embeddings generation. Text embedding is a vector re
 
 For quest game, I generated a lot promts wich describes each possible action in game (like `go left`, `take Luis cup`, `go to somebody`, ect). I generated some about 512 (there are a lot of synonims like `Ivan == Pleshkov` or `Go == Move`) Then I generated embeddings for each promt. And then I used QDrant to find the most similar promt for the player's promt. And then I executed the action from most similar promt.
 
+Is QDrant actually required here? Not sure, it depends on amount of predefined promts. But even in case of 1 million of predefined promts, QDrant cloud is unnecessary. True usage of QDrant powerful comes next.
+
 ## Define issue for real qdrant usage
+
+Let's imagine that we are a game designer of such quest. And for next game update we have to improve set of predefined promts. And as game designer, it's important to find what players try to type but got unexepced result. For instance, a lot of users will promt `consume wine from the bottle`. And game designer is interested for such promts, which are far from predefined promts but close to a real possible action.
+
+All user promts are upserted in QDrant cloud.
+
+This repo contains an implementation of such search of "intresting" promts. To run the demo, try command.
+
+```bash
+cargo run -- --analysis="./discovery.json"
+```
+
+`discovery.json` contains parameters of search:
+
+```json
+{
+    "entity": "bottle",
+    "limit": 5,
+    "actions": [
+        "go to",
+        "take",
+        "gift",
+        "drop"
+    ]
+}
+```
+
+`entity` is a search topic. In this example, we are looking for some actions with bottle from users history. `actions` describes list of actions what we can already do with entity.
+
+After running, you may get result like that:
+```
+[2023-12-22T09:44:35Z INFO  app::history_analysis] Uncover hidden stories or lore related to the bottle
+[2023-12-22T09:44:35Z INFO  app::history_analysis] Use a tool or object to break the glass
+[2023-12-22T09:44:35Z INFO  app::history_analysis] Monitor the player's reaction to the taste.
+[2023-12-22T09:44:35Z INFO  app::history_analysis] drop bottle
+[2023-12-22T09:44:35Z INFO  app::history_analysis] Attempt to bribe NPCs with the bottle of wine
+```
+
+All results are non-similar to each other and all of them are related to the bottle (but not phrase `bottle` which is presented in history database). Nice!
+
+I asked ChatGPT for a list of promts for this game and upserted to qdrant, you can find the list in the file `discovery_search_test_promts.txt`. It contains different requests, not only actions with bottle.
 
 ## Using discovery search to analyse players promts
 
+To implemets such search, I used new Discovery API feature with context and target. Context pairs have similar positive point - `target` text from json. Negative - known actions. Target is a some random direction (text embedding from random phrase):
+
 ![Discovery1](images/discovery_1.jpg)
 
+After this search, next proposal has to be far from previous result. So, for the next discovery search add positive-negative using previous search result:
+
 ![Discovery2](images/discovery_2.jpg)
+
+Each iteration add context pair to the next search. And it makes search result closer and closer to `entity` phrase. It gets a clear behaviour: first found phrases may be a garbage and it's reasonable to search while the phrase is not synonym of `entity` phrase. After that, restart search and try with new randomized target.
 
 ## Conclusion
 

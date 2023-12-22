@@ -1,5 +1,5 @@
 {
-    "target": "bottle",
+    "entity": "bottle",
     "limit": 5,
     "actions": [
         "go to",

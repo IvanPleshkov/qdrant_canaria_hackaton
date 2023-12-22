@@ -4,7 +4,7 @@ use crate::{embeddings_generator::EmbeddingsGenerator, qdrant::QDrant};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Input {
-    pub target: String,
+    pub entity: String,
     pub limit: usize,
     pub actions: Vec<String>,
     pub start_phrase: Option<String>,
@@ -29,7 +29,7 @@ pub fn run(filename: &str) {
         let mut target = embeddings_generator.generate(&start_phrase).await.unwrap();
         target = target.iter().map(|x| -x).collect();
 
-        let positive = embeddings_generator.generate(&input.target).await.unwrap();
+        let positive = embeddings_generator.generate(&input.entity).await.unwrap();
         let mut negatives = embeddings_generator
             .generate_many(&input.actions)
             .await
