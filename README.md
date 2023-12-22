@@ -100,7 +100,7 @@ I asked ChatGPT for a list of promts for this game and upserted to qdrant, you c
 
 ## Using discovery search to analyse players promts
 
-To implemets such search, I used new Discovery API feature with context and target. Context pairs have similar positive point - `target` text from json. Negative - known actions. Target is a some random direction (text embedding from random phrase):
+To implemets such search, I used new Discovery API feature with context and target. Context pairs have similar positive point - `entity` text from json. Negative - known actions. Target is a some random direction (text embedding from random phrase):
 
 ![Discovery1](images/discovery_1.jpg)
 
