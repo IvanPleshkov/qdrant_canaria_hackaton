@@ -56,8 +56,9 @@ For this game I used QDrant and [Cohere](https://cohere.ai/) for text embeddings
 
 ## Using discovery search to analyse players promts
 
-![Discovery1](images/discovery_1.png)
-![Discovery2](images/discovery_2.png)
+![Discovery1](images/discovery_1.jpg)
+
+![Discovery2](images/discovery_2.jpg)
 
 ## Conclusion
 
