@@ -50,7 +50,9 @@ Also Andrey can take/drop cups. That's it, no more actions here.
 
 For this game I used QDrant and [Cohere](https://cohere.ai/) for text embeddings.
 
+Cohere is required for text embeddings generation. Text embedding is a vector representation of the text. It is used to compare texts. For instance, if you have two texts and you want to know how similar they are, you can generate embeddings for them and then compare these embeddings. The more similar texts are, the closer their embeddings are.
 
+For quest game, I generated a lot promts wich describes each possible action in game (like `go left`, `take Luis cup`, `go to somebody`, ect). I generated some about 512 (there are a lot of synonims like `Ivan == Pleshkov` or `Go == Move`) Then I generated embeddings for each promt. And then I used QDrant to find the most similar promt for the player's promt. And then I executed the action from most similar promt.
 
 ## Define issue for real qdrant usage
 
