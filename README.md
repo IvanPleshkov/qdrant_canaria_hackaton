@@ -34,15 +34,15 @@ There are pure amout of actions and no game ending condition.
 
 You can ask andrey to change this postion. For instance, by request `move to Luis` Andrey will go to Luis:
 
-![GoToLuis](images/go_to_luis.jpg)
+![GoToLuis](images/go_to_luis.png)
 
 Also, Andrey can grab and drop items. For instance, by request `take bottle` Andrey will grab the bottle:
 
-![TakeBottle](images/take_bottle.jpg)
+![TakeBottle](images/take_bottle.png)
 
 And by request `give it to Roman` Andrey will drop the bottle near roman:
 
-![DropBottle](images/drop_bottle.jpg)
+![DropBottle](images/drop_bottle.png)
 
 Also Andrey can take/drop cups. That's it, no more actions here.
 
@@ -55,6 +55,9 @@ For this game I used QDrant and [Cohere](https://cohere.ai/) for text embeddings
 ## Define issue for real qdrant usage
 
 ## Using discovery search to analyse players promts
+
+![Discovery1](images/discovery_1.png)
+![Discovery2](images/discovery_2.png)
 
 ## Conclusion
 
