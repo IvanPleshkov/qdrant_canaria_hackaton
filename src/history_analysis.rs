@@ -30,10 +30,11 @@ pub fn run(filename: &str) {
         target = target.iter().map(|x| -x).collect();
 
         let positive = embeddings_generator.generate(&input.entity).await.unwrap();
-        let mut negatives = embeddings_generator
-            .generate_many(&input.actions)
-            .await
-            .unwrap();
+        let mut negatives = vec![];
+        for action in &input.actions {
+            let text = format!("{} {}", action, input.entity);
+            negatives.push(embeddings_generator.generate(&text).await.unwrap());
+        }
         let mut positives: Vec<_> = (0..negatives.len()).map(|_| positive.clone()).collect();
 
         for _ in 0..input.limit {

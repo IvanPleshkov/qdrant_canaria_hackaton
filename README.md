@@ -87,11 +87,11 @@ cargo run -- --analysis="./discovery.json"
 
 After running, you may get result like that:
 ```
-[2023-12-22T09:44:35Z INFO  app::history_analysis] Uncover hidden stories or lore related to the bottle
-[2023-12-22T09:44:35Z INFO  app::history_analysis] Use a tool or object to break the glass
-[2023-12-22T09:44:35Z INFO  app::history_analysis] Monitor the player's reaction to the taste.
-[2023-12-22T09:44:35Z INFO  app::history_analysis] drop bottle
-[2023-12-22T09:44:35Z INFO  app::history_analysis] Attempt to bribe NPCs with the bottle of wine
+[2023-12-22T12:02:46Z INFO  app::history_analysis] Use the bottle to trigger a specific quest or event
+[2023-12-22T12:02:46Z INFO  app::history_analysis] Swap equipment to optimize each other's abilities
+[2023-12-22T12:02:46Z INFO  app::history_analysis] Hide the bottle in a secret location
+[2023-12-22T12:02:46Z INFO  app::history_analysis] Use a tool or object to break the glass
+[2023-12-22T12:02:47Z INFO  app::history_analysis] Create a cocktail by mixing different drinks
 ```
 
 All results are non-similar to each other and all of them are related to the bottle (but not phrase `bottle` which is presented in history database). Nice!
