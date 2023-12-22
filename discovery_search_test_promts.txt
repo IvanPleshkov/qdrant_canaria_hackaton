@@ -1,0 +1,124 @@
+Bottle
+Examine the label.
+Check for any hidden markings or clues.
+Assess the bottle's condition.
+Uncork the bottle.
+Use a corkscrew to open the bottle.
+Try different techniques to open it.
+Pour wine into a glass.
+Pour wine onto the ground.
+Pour wine into another container.
+Consume the wine.
+Monitor the player's reaction to the taste.
+Overindulge and experience different effects.
+Create a cocktail by mixing different drinks.
+Smash the bottle against a surface.
+Use the broken bottle as a weapon.
+Keep the wine for later use.
+Save the wine for a specific event or quest.
+Share the wine with other characters.
+Use the wine to build relationships with NPCs.
+Trade the bottle of wine with other characters.
+Negotiate for better items or information.
+Offer the wine as a gift.
+Present the wine to gain favor or access to a location.
+Use the wine in alchemical experiments.
+Combine the wine with other ingredients for magical effects.
+Hide the bottle in a secret location.
+Use the bottle as a storage container for small items.
+Recycle the bottle for crafting materials.
+Break down the bottle to create new items.
+Attempt to bribe NPCs with the bottle of wine.
+Influence the outcome of a quest through bribery.
+Use a magnifying glass or magical ability to analyze the wine.
+Identify any mystical properties or curses.
+Display the bottle to impress or intimidate others.
+Use the wine as a status symbol.
+Use the wine as an ingredient in cooking.
+Enhance the flavor of dishes with the wine.
+Use the bottle to trigger a specific quest or event.
+Uncover hidden stories or lore related to the bottle.
+Place the bottle as decoration in the player's home or a specific location.
+Customize the game environment with found items.
+Attempt to enchant the bottle with magical abilities.
+Use it as a vessel for containing magical essences.
+Slide the window open.
+Use a latch or handle to open the window.
+Shut the window to block out elements.
+Use a latch or handle to close the window securely.
+Peek through the window to observe the surroundings.
+Gather information about the environment outside.
+Attempt to climb through the window.
+Use the window as an alternative entrance or exit.
+Examine the window frame for any hidden mechanisms or clues.
+Check for signs of damage or tampering.
+Smash the window to gain entry or exit.
+Use a tool or object to break the glass.
+Use items in the inventory to repair a broken window.
+Fix any damage to the window frame.
+Use curtains or blinds to cover the window.
+Hide from enemies or prying eyes.
+Customize the window with decorations.
+Use items found in the game world to enhance the window's appearance.
+Block the window with furniture or other objects.
+Create a barricade to prevent entry.
+Eavesdrop on conversations or sounds from outside.
+Gain information or clues by listening through the window.
+Plan an escape route using the window.
+Use the window as part of a larger escape strategy.
+Seal the window against drafts or environmental hazards.
+Utilize magical abilities or items to create a protective barrier.
+Use a camera or magical device to capture images through the window.
+Document important scenes or details.
+Communicate with NPCs or other characters through the window.
+Engage in conversations or negotiations.
+Use the window to signal to characters outside.
+Coordinate plans or send distress signals.
+Use the window to trigger a specific quest or event.
+Discover hidden stories or lore related to the window.
+Experience changes in weather through the window.
+Witness storms, rain, or other environmental conditions.
+Use the window as an emergency escape from pursuers.
+Employ stealth tactics to avoid detection.
+Find or purchase upgrades for the window.
+Improve security, insulation, or other features.
+Engage in conversation with the colleague.
+Discuss current quests, objectives, or personal stories.
+Request assistance from the colleague for a particular task.
+Seek guidance or advice on in-game challenges.
+Share items or resources with the colleague.
+Provide gifts to strengthen your relationship.
+Form a party or alliance with the colleague for cooperative gameplay.
+Take on challenging quests together.
+Challenge the colleague to a friendly competition.
+Compete in mini-games or specific skill challenges.
+Request the colleague to follow the player character.
+Use them as a companion during exploration or combat.
+Dismiss the colleague if their presence is no longer needed.
+Send them on a specific task or back to a designated location.
+Train with the colleague to improve skills or attributes.
+Engage in sparring or practice sessions.
+Exchange items or resources with the colleague.
+Swap equipment to optimize each other's abilities.
+Give specific tasks or roles to the colleague.
+Utilize their unique skills for specific in-game advantages.
+Protect the colleague during combat or dangerous situations.
+Prioritize their safety in critical moments.
+Consider betraying the colleague for personal gain.
+Choose a path of deception and explore the consequences.
+Rescue the colleague from perilous situations.
+Engage in daring missions to save them.
+Work on building a positive or negative relationship with the colleague.
+Affect the storyline based on your interactions.
+Assign the colleague to complete specific quests.
+Receive rewards or benefits based on their success.
+Develop a romantic relationship with the colleague.
+Experience unique storylines and interactions.
+Share knowledge or skills with the colleague.
+Learn from each other to enhance abilities.
+Use healing abilities or items to assist the colleague.
+Ensure their well-being during and after battles.
+Send the colleague ahead to scout unfamiliar territories.
+Gather information about upcoming challenges.
+Face consequences if the player betrays the colleague.
+Influence the game's storyline and character relationships.

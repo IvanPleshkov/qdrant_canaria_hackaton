@@ -2,6 +2,7 @@ pub mod action;
 pub mod actions;
 pub mod embeddings_generator;
 pub mod entity;
+pub mod history_analysis;
 pub mod promt_processor;
 pub mod qdrant;
 pub mod scene;
@@ -21,6 +22,9 @@ use scene::Scene;
 struct Args {
     #[clap(long, default_value_t = false)]
     pub recreate: bool,
+
+    #[clap(long)]
+    pub analysis: Option<String>,
 }
 
 pub type Error = String;
@@ -31,6 +35,11 @@ fn main() -> Result<(), eframe::Error> {
     env_logger::builder()
         .filter_level(log::LevelFilter::Info)
         .init();
+
+    if let Some(filename) = &args.analysis {
+        history_analysis::run(&filename);
+        return Ok(());
+    }
 
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default().with_inner_size([1100.0, 500.0]),

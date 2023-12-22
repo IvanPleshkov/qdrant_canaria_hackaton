@@ -1,0 +1,10 @@
+{
+    "target": "bottle",
+    "limit": 5,
+    "actions": [
+        "go to",
+        "take",
+        "gift",
+        "drop"
+    ]
+}

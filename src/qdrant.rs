@@ -1,9 +1,13 @@
 use egui::ahash::HashMap;
 use qdrant_client::prelude::*;
 use qdrant_client::qdrant::point_id::PointIdOptions;
+use qdrant_client::qdrant::target_vector::Target;
+use qdrant_client::qdrant::vector_example::Example;
+use qdrant_client::qdrant::vectors::VectorsOptions;
 use qdrant_client::qdrant::vectors_config::Config;
 use qdrant_client::qdrant::{
-    CreateCollection, PointId, SearchParams, SearchPoints, VectorParams, VectorsConfig,
+    ContextExamplePair, CreateCollection, DiscoverPoints, PointId, SearchParams, SearchPoints,
+    TargetVector, VectorExample, VectorParams, VectorsConfig,
 };
 use serde_json::json;
 
@@ -11,11 +15,11 @@ use crate::Error;
 
 //pub const API_KEY: &str = "rWPmMZkLXmmoNqmB1Wk6vw8E5i8qfhxxTdyYPrrsjzH8gR_kOJeQFbw";
 pub const API_KEY: &str = "WPmMZkLXmmoNqmB1Wk6vw8E5i8qfhxxTdyYPrrsjzH8gR_kOJeQFbw";
-pub const API_ENDPOINT: &str =
-    "https://7a555247-714d-4424-99b5-2312f7f119fa.us-east4-0.gcp.cloud.qdrant.io:6334";
 pub const HISTORY_COLLECTION_NAME: &str = "history";
 pub const QUERIES_COLLECTION_NAME: &str = "queries";
 pub const LOOKUP_COLLECTION_NAME: &str = "lookup";
+pub const API_ENDPOINT: &str =
+    "https://7a555247-714d-4424-99b5-2312f7f119fa.us-east4-0.gcp.cloud.qdrant.io:6334";
 
 #[derive(Debug, Clone, Copy)]
 pub struct ScoredIndex {
@@ -151,6 +155,72 @@ impl QDrant {
                 score: point.score,
                 point: point_id,
             });
+        }
+        Ok(result)
+    }
+
+    pub async fn search_discovery(
+        &self,
+        target: &[f32],
+        top: usize,
+        positives: Vec<Vec<f32>>,
+        negatives: Vec<Vec<f32>>,
+    ) -> Result<Vec<(String, Vec<f32>)>, Error> {
+        let discover_target = TargetVector {
+            target: Some(Target::Single(VectorExample {
+                example: Some(Example::Vector(target.to_owned().into())),
+            })),
+        };
+
+        let context: Vec<ContextExamplePair> = positives
+            .iter()
+            .zip(negatives.iter())
+            .map(|(positive, negative)| {
+                let pair = ContextExamplePair {
+                    positive: Some(VectorExample {
+                        example: Some(Example::Vector(positive.clone().into())),
+                    }),
+                    negative: Some(VectorExample {
+                        example: Some(Example::Vector(negative.clone().into())),
+                    }),
+                };
+                pair
+            })
+            .collect();
+
+        let search_result = self
+            .client
+            .discover(&DiscoverPoints {
+                collection_name: HISTORY_COLLECTION_NAME.into(),
+                limit: top as u64,
+                target: Some(discover_target),
+                context,
+                with_payload: Some(true.into()),
+                with_vectors: Some(true.into()),
+                params: Some(SearchParams {
+                    exact: Some(true),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            })
+            .await
+            .map_err(|e| e.to_string())?;
+
+        let mut result = vec![];
+        for point in search_result.result.iter().cloned() {
+            let text = point.payload["text"].as_str().unwrap().to_owned();
+            let vector = match point
+                .vectors
+                .as_ref()
+                .unwrap()
+                .vectors_options
+                .as_ref()
+                .unwrap()
+            {
+                VectorsOptions::Vector(vector) => vector.data.to_owned(),
+                _ => unreachable!(),
+            };
+            result.push((text, vector));
         }
         Ok(result)
     }
